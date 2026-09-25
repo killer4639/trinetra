@@ -3,10 +3,26 @@ name = "trinetra"
 version = "0.1.0"
 edition = "2024"
 
+# cdylib: the Cloudflare Worker (built by `worker-build`, which compiles only the lib).
+# rlib: lets the native dev server in src/main.rs use the same content and API code.
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
-axum = "0.8.9"
 pulldown-cmark = { version = "0.13.4", default-features = false, features = ["html"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+axum = "0.8.9"
 tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "net", "signal"] }
 tower-http = { version = "0.7.1", features = ["fs"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+worker = "0.8.6"
+
+[profile.release]
+# Size-optimised for the Worker upload and cold start; the dev server does not need peak speed.
+opt-level = "s"
+lto = true
+codegen-units = 1

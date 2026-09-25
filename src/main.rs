@@ -1,8 +1,11 @@
 //! Trinetra: a scroll-driven blog. Serves the static frontend and a small read-only JSON API.
-
-mod content;
+//!
+//! This is the native server for local development; production runs `src/worker.rs` on
+//! Cloudflare. Routes here must match `api::route`.
 
 use std::{env, net::SocketAddr, path::PathBuf, sync::Arc};
+
+use trinetra::content;
 
 use axum::{
     Json, Router,
@@ -23,10 +26,16 @@ struct AppState {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let site_root = site_root();
-    let library = content::Library::load(&site_root.join("content"))?;
-    println!("loaded {} beads and {} posts", library.bead_count(), library.post_count());
+    let library = content::Library::embedded()?;
+    println!(
+        "loaded {} beads and {} posts",
+        library.bead_count(),
+        library.post_count()
+    );
 
-    let state = AppState { library: Arc::new(library) };
+    let state = AppState {
+        library: Arc::new(library),
+    };
     let app = Router::new()
         .route("/api/beads", get(list_beads))
         .route("/api/beads/{index}", get(get_bead))
@@ -38,11 +47,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let address = SocketAddr::from(([127, 0, 0, 1], listen_port()?));
     let listener = tokio::net::TcpListener::bind(address).await?;
     println!("Trinetra is open at http://{address}");
-    axum::serve(listener, app).with_graceful_shutdown(shutdown_signal()).await?;
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
     Ok(())
 }
 
-/// `TRINETRA_ROOT` lets a deployed binary point at its content; defaults to the crate directory.
+/// `TRINETRA_ROOT` lets a relocated binary find `static/`; defaults to the crate directory.
+/// Content is compiled in, so only static assets are read from disk.
 fn site_root() -> PathBuf {
     match env::var_os("TRINETRA_ROOT") {
         Some(root) => PathBuf::from(root),
@@ -52,7 +64,9 @@ fn site_root() -> PathBuf {
 
 fn listen_port() -> Result<u16, String> {
     match env::var("PORT") {
-        Ok(text) => text.parse::<u16>().map_err(|error| format!("invalid PORT '{text}': {error}")),
+        Ok(text) => text
+            .parse::<u16>()
+            .map_err(|error| format!("invalid PORT '{text}': {error}")),
         Err(env::VarError::NotPresent) => Ok(LISTEN_PORT_DEFAULT),
         Err(error) => Err(format!("invalid PORT: {error}")),
     }
