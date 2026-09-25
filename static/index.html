@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trinetra — notes from the third eye</title>
+  <meta name="description" content="A blog you enter through the third eye of Shiva.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@300;400&family=Tiro+Devanagari+Sanskrit&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "/vendor/three/three.module.js", "three/addons/": "/vendor/three/addons/" } }
+  </script>
+</head>
+<body>
+  <main id="top">
+    <section id="journey" aria-label="The third eye opens as you scroll">
+      <div id="stage">
+        <canvas id="gl" aria-label="Lord Shiva in meditation, wearing a rudraksha mala"></canvas>
+        <canvas id="portal" aria-hidden="true"></canvas>
+        <div id="flash" aria-hidden="true"></div>
+
+        <header class="corner corner-top-left">
+          <span class="wordmark">Trinetra</span>
+          <span class="small-caps">notes from the third eye</span>
+        </header>
+        <div class="corner corner-top-right small-caps" aria-hidden="true">
+          <span class="deva">ॐ नमः शिवाय</span>
+          <span id="chapter-counter">0 / 5</span>
+        </div>
+        <div id="rail" aria-hidden="true"><i></i></div>
+
+        <div id="captions">
+          <div class="caption hero" data-window="0,0,0.06,0.1">
+            <p class="deva hero-deva">त्रिनेत्र</p>
+            <h1>Trinetra</h1>
+            <p class="small-caps">the eye that sees through</p>
+          </div>
+          <article class="caption chapter right" data-window="0.14,0.17,0.24,0.27" data-chapter="1">
+            <span class="numeral">I</span><h2>Rudrākṣa</h2>
+            <p>The tear of Rudra. Each bead is a door &mdash; turn the mala, and touch one to open it.</p>
+          </article>
+          <article class="caption chapter right" data-window="0.26,0.29,0.35,0.38" data-chapter="2">
+            <span class="numeral">II</span><h2>Japa</h2>
+            <p>One bead, one breath. Twenty-seven stars, and a guru bead where the circle begins again.</p>
+          </article>
+          <article class="caption chapter left" data-window="0.37,0.4,0.46,0.49" data-chapter="3">
+            <span class="numeral">III</span><h2>Nīlakaṇṭha</h2>
+            <p>He held the ocean&rsquo;s poison in his throat, so that the world could go on breathing.</p>
+          </article>
+          <article class="caption chapter left" data-window="0.5,0.53,0.59,0.62" data-chapter="4">
+            <span class="numeral">IV</span><h2>Two eyes</h2>
+            <p>see the world.</p>
+          </article>
+          <article class="caption chapter left" data-window="0.65,0.68,0.76,0.79" data-chapter="5">
+            <span class="numeral">V</span><h2>The third</h2>
+            <p>sees through it.</p>
+          </article>
+          <div class="caption whisper" data-window="0.8,0.82,0.86,0.88"><p>step inside</p></div>
+        </div>
+
+        <div id="hints" class="small-caps">
+          <span class="hint-scroll">scroll to awaken<i aria-hidden="true"></i></span>
+          <span class="hint-mala">drag the mala &middot; touch a bead</span>
+        </div>
+        <div id="tooltip" role="tooltip" hidden></div>
+        <div id="loader" aria-live="polite"><span class="deva">ॐ</span><span class="small-caps">awakening</span></div>
+        <nav id="bead-index" class="visually-hidden" aria-label="Beads of the mala"></nav>
+      </div>
+    </section>
+
+    <section id="realm" aria-labelledby="realm-title">
+      <header class="realm-head">
+        <p class="small-caps">you are inside</p>
+        <h2 id="realm-title">Chidākāśa</h2>
+        <p class="deva realm-sub">चिदाकाश &middot; the sky of consciousness</p>
+        <p class="realm-note">Placeholder realm &mdash; what opens here is still to be decided.</p>
+      </header>
+      <ol id="post-list" class="post-list" aria-label="Posts"></ol>
+      <footer class="realm-foot small-caps">
+        <a href="#top" id="to-surface">return to the surface</a>
+      </footer>
+    </section>
+  </main>
+
+  <dialog id="bead-dialog" class="card-dialog" aria-labelledby="bead-title">
+    <button class="close" type="button" aria-label="Close">&times;</button>
+    <div class="bead-medallion" aria-hidden="true"><span class="bead-number"></span></div>
+    <h3 id="bead-title" class="bead-title"></h3>
+    <p class="bead-subtitle"></p>
+    <div class="bead-body prose"></div>
+  </dialog>
+
+  <dialog id="reader" class="card-dialog reader" aria-labelledby="post-title">
+    <button class="close" type="button" aria-label="Close">&times;</button>
+    <article>
+      <p class="post-date"></p>
+      <h1 id="post-title" class="post-title"></h1>
+      <div class="post-body prose"></div>
+    </article>
+  </dialog>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
