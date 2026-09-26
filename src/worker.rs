@@ -35,11 +35,6 @@ async fn fetch(request: Request, _env: Env, _context: Context) -> Result<Respons
             Some(bead) => json(bead),
             None => Response::error("Not Found", 404),
         },
-        ApiRoute::Posts => json(&library.post_summaries()),
-        ApiRoute::Post(slug) => match library.post(slug) {
-            Some(post) => json(post),
-            None => Response::error("Not Found", 404),
-        },
     }
 }
 

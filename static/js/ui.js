@@ -1,12 +1,6 @@
-// Tooltip, bead dialog, post reader and the realm's post list.
+// Bead tooltip and bead dialog.
 import { fetchJson } from './api.js';
 import { toDevanagariDigits } from './math.js';
-
-function formatDate(isoDate) {
-  const date = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return isoDate;
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-}
 
 function lockScroll(dialog) {
   document.documentElement.style.overflow = 'hidden';
@@ -27,11 +21,8 @@ function wireDialog(dialog) {
 export function initUi() {
   const tooltip = document.getElementById('tooltip');
   const beadDialog = document.getElementById('bead-dialog');
-  const reader = document.getElementById('reader');
   wireDialog(beadDialog);
-  wireDialog(reader);
   let beadRequest = 0;
-  let postRequest = 0;
 
   let tooltipTitle = null;
 
@@ -78,51 +69,5 @@ export function initUi() {
     }
   }
 
-  async function openPost(slug) {
-    const request = ++postRequest;
-    const titleElement = reader.querySelector('.post-title');
-    const dateElement = reader.querySelector('.post-date');
-    const body = reader.querySelector('.post-body');
-    titleElement.textContent = '';
-    dateElement.textContent = '';
-    body.textContent = '…';
-    if (!reader.open) {
-      reader.showModal();
-      lockScroll(reader);
-    }
-    try {
-      const post = await fetchJson(`/api/posts/${encodeURIComponent(slug)}`);
-      if (request !== postRequest) return;
-      titleElement.textContent = post.title;
-      dateElement.textContent = formatDate(post.date);
-      body.innerHTML = post.body_html; // trusted, author-written content
-    } catch (error) {
-      if (request === postRequest) body.textContent = 'This post could not be opened.';
-      console.error(error);
-    }
-  }
-
-  function renderPosts(posts) {
-    const list = document.getElementById('post-list');
-    list.replaceChildren();
-    for (const post of posts) {
-      const item = document.createElement('li');
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'post-card';
-      const date = document.createElement('span');
-      date.className = 'date';
-      date.textContent = formatDate(post.date).toUpperCase();
-      const title = document.createElement('h3');
-      title.textContent = post.title;
-      const summary = document.createElement('p');
-      summary.textContent = post.summary;
-      card.append(date, title, summary);
-      card.addEventListener('click', () => openPost(post.slug));
-      item.append(card);
-      list.append(item);
-    }
-  }
-
-  return { showTooltipAt, hideTooltip, openBead, openPost, renderPosts };
+  return { showTooltipAt, hideTooltip, openBead };
 }

@@ -3,6 +3,7 @@ import { Portal } from './portal.js';
 import { initUi } from './ui.js';
 import { fetchJson } from './api.js';
 import { clamp, smoothstep, windowOpacity } from './math.js';
+import { initRealm } from './realm.js';
 
 const MALA_INTERACTIVE_UNTIL = 0.47;
 const PROGRESS_EASE_PER_SECOND = 5;
@@ -102,11 +103,6 @@ async function loadContent() {
   }
   renderBeadIndex(beadSummaries);
   if (stage) stage.mala.setBeads(beadSummaries);
-  try {
-    ui.renderPosts(await fetchJson('/api/posts'));
-  } catch (error) {
-    console.error('posts unavailable', error);
-  }
 }
 
 async function loadStage() {
@@ -130,14 +126,18 @@ function readPinnedProgress() {
 }
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+const realm = initRealm(document.getElementById('realm'));
 window.addEventListener('scroll', readScroll, { passive: true });
+window.addEventListener('scroll', realm.update, { passive: true });
 window.addEventListener('resize', onResize);
+window.addEventListener('resize', realm.update);
 document.getElementById('to-surface').addEventListener('click', (event) => {
   event.preventDefault();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 readScroll();
+realm.update();
 progress = targetProgress;
 loadContent();
 loadStage();

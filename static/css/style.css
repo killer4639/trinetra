@@ -120,45 +120,60 @@ html, body {
 
 /* ---------- the realm inside ---------- */
 
-#realm {
-  position: relative;
-  min-height: 100vh;
-  padding: 14vh var(--edge) 10vh;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(224, 138, 70, .22), transparent 60%),
-    linear-gradient(#caa477 0, #3b2a1f 22vh, #121416 55vh, var(--ink) 100%);
+#realm { position: relative; background: var(--ink); }
+
+.scene { position: relative; }
+.scene-unmesha { height: 220vh; }
+.scene-ranga { height: 420vh; }
+.scene-pratyabhijna { height: 200vh; }
+
+.scene-frame {
+  position: sticky; top: 0;
+  display: grid; place-items: center;
+  height: 100vh; height: 100svh;
+  padding: 0 var(--edge);
+  overflow: hidden;
 }
-.realm-head { text-align: center; margin-bottom: 6rem; }
-.realm-head .small-caps { color: #1c1511; }
-.realm-head h2 { margin: .6rem 0 0; font-family: var(--caps); font-weight: 300; font-size: clamp(2.8rem, 8vw, 6rem); letter-spacing: .28em; text-indent: .28em; color: #fff5e6; }
-.realm-sub { margin: .4rem 0 0; font-size: 1.1rem; color: rgba(255, 240, 220, .8); }
-.realm-note { margin: 1.4rem auto 0; max-width: 32rem; font-style: italic; color: var(--bone-dim); }
+.scene-frame > * { grid-area: 1 / 1; }
+.scene-frame > .dissolve, .scene-frame > .spotlight { grid-area: auto; }
+.scene [data-window] { opacity: 0; visibility: hidden; transform: translateY(var(--rise, 0)); will-change: opacity, transform; }
 
-.post-list { list-style: none; margin: 0 auto; padding: 0; max-width: 60rem; border-top: 1px solid var(--bone-faint); }
-.post-card {
-  display: grid;
-  grid-template-columns: 11rem 1fr;
-  gap: .4rem 2rem;
-  width: 100%;
-  padding: 2rem .4rem;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  border-bottom: 1px solid var(--bone-faint);
-  cursor: pointer;
-  transition: background .3s, padding .3s;
+/* The world dissolving into the light of the opened eye (Spanda Kārikā 1.1). */
+.scene-unmesha .scene-frame { background: radial-gradient(ellipse at 50% 55%, rgba(224, 138, 70, .16), transparent 62%), var(--ink); }
+.dissolve { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, #fff8ea 0%, #f3dcb8 45%, #caa477 100%); pointer-events: none; }
+.scene-unmesha [data-window].dissolve { opacity: 1; visibility: visible; transform: none; }
+
+.verse { position: relative; margin: 0; max-width: 46rem; text-align: center; }
+.verse blockquote { margin: 0; }
+.verse-text { margin: 0; font-size: clamp(1.5rem, 3.4vw, 2.6rem); line-height: 1.7; color: var(--gold); text-shadow: 0 0 28px rgba(224, 138, 70, .28); }
+.verse-english { margin: 1.6rem auto 0; max-width: 34rem; font-size: clamp(1.1rem, 2vw, 1.4rem); line-height: 1.55; font-style: italic; color: var(--bone); }
+.verse figcaption { margin-top: 1.8rem; }
+.verse figcaption::before { content: ''; display: block; width: 2.4rem; height: 1px; margin: 0 auto 1rem; background: var(--ember); opacity: .7; }
+
+/* A bare stage: one light, one floor (Śiva Sūtras 3.9–3.11). */
+.spotlight { position: absolute; inset: 0; pointer-events: none; }
+.spotlight::before {
+  content: ''; position: absolute; left: 50%; top: -6vh; width: min(70rem, 150vw); height: 96vh;
+  transform: translateX(-50%);
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background: linear-gradient(rgba(255, 236, 206, .2), rgba(255, 226, 186, .07) 60%, rgba(255, 220, 180, .03));
+  filter: blur(6px);
 }
-.post-card:hover, .post-card:focus-visible { background: rgba(220, 214, 201, .04); padding-left: 1.2rem; outline: none; }
-.post-card .date { grid-row: span 2; padding-top: .6rem; font-family: var(--caps); font-size: .74rem; letter-spacing: .26em; color: var(--ember); }
-.post-card h3 { margin: 0; font-weight: 400; font-size: 1.9rem; line-height: 1.15; color: #f4eee2; }
-.post-card p { margin: 0; font-size: 1.15rem; line-height: 1.45; font-style: italic; color: var(--bone-dim); }
+.spotlight::after {
+  content: ''; position: absolute; left: 50%; bottom: 3vh; width: min(58rem, 130vw); height: 18vh;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 230, 196, .24), rgba(224, 138, 70, .07) 55%, transparent 72%);
+}
+.sutra .verse-text { font-size: clamp(2.2rem, 6vw, 4.4rem); line-height: 1.3; color: #f6e3c2; }
 
-.realm-foot { margin-top: 6rem; text-align: center; }
-.realm-foot a { color: var(--bone-dim); text-decoration: none; border-bottom: 1px solid var(--bone-faint); padding-bottom: .3rem; }
-.realm-foot a:hover { color: var(--ember); }
-
+/* Recognition (Pratyabhijñāhṛdayam 1), then the way back up. */
+.scene-pratyabhijna .scene-frame {
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4.5rem;
+  background: radial-gradient(ellipse at 50% 45%, rgba(200, 164, 108, .14), transparent 60%), var(--ink);
+}
+#to-surface { color: var(--bone-dim); text-decoration: none; border-bottom: 1px solid var(--bone-faint); padding-bottom: .3rem; }
+#to-surface:hover, #to-surface:focus-visible { color: var(--ember); outline: none; }
 /* ---------- dialogs ---------- */
 
 .card-dialog {
@@ -193,9 +208,6 @@ html, body {
 .bead-title { margin: 0; text-align: center; font-family: var(--caps); font-weight: 300; font-size: 1.9rem; letter-spacing: .2em; color: #f4eee2; }
 .bead-subtitle { margin: .3rem 0 1.6rem; text-align: center; font-family: var(--deva); color: var(--gold); }
 
-.reader { width: min(44rem, calc(100vw - 2rem)); }
-.post-date { margin: 0; font-family: var(--caps); font-size: .75rem; letter-spacing: .3em; color: var(--ember); }
-.post-title { margin: .5rem 0 1.6rem; font-weight: 400; font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1.1; color: #f4eee2; }
 
 .prose { font-size: 1.22rem; line-height: 1.65; font-weight: 400; }
 .prose a { color: var(--ember); }
@@ -216,10 +228,9 @@ html, body {
   .caption.chapter { top: auto; bottom: 12vh; width: auto; transform: translateY(var(--rise, 0)); }
   .caption.chapter.right, .caption.chapter.left { left: var(--edge); right: var(--edge); }
   .corner-top-right, #rail { display: none; }
-  .post-card { grid-template-columns: 1fr; }
-  .post-card .date { grid-row: auto; padding-top: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hint-scroll i::after, #loader .deva { animation: none; }
+  .scene [data-window] { transform: none; }
 }

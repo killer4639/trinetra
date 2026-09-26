@@ -1,4 +1,4 @@
-//! Trinetra: a scroll-driven blog. Serves the static frontend and a small read-only JSON API.
+//! Trinetra: a scroll-driven site. Serves the static frontend and a small read-only JSON API.
 //!
 //! This is the native server for local development; production runs `src/worker.rs` on
 //! Cloudflare. Routes here must match `api::route`.
@@ -27,11 +27,7 @@ struct AppState {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let site_root = site_root();
     let library = content::Library::embedded()?;
-    println!(
-        "loaded {} beads and {} posts",
-        library.bead_count(),
-        library.post_count()
-    );
+    println!("loaded {} beads", library.bead_count());
 
     let state = AppState {
         library: Arc::new(library),
@@ -39,8 +35,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/api/beads", get(list_beads))
         .route("/api/beads/{index}", get(get_bead))
-        .route("/api/posts", get(list_posts))
-        .route("/api/posts/{slug}", get(get_post))
         .fallback_service(ServeDir::new(site_root.join("static")))
         .with_state(state);
 
@@ -85,17 +79,6 @@ async fn list_beads(State(state): State<AppState>) -> Response {
 async fn get_bead(State(state): State<AppState>, Path(index): Path<u16>) -> Response {
     match state.library.bead(index) {
         Some(bead) => Json(bead).into_response(),
-        None => StatusCode::NOT_FOUND.into_response(),
-    }
-}
-
-async fn list_posts(State(state): State<AppState>) -> Response {
-    Json(state.library.post_summaries()).into_response()
-}
-
-async fn get_post(State(state): State<AppState>, Path(slug): Path<String>) -> Response {
-    match state.library.post(&slug) {
-        Some(post) => Json(post).into_response(),
         None => StatusCode::NOT_FOUND.into_response(),
     }
 }
