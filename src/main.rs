@@ -10,13 +10,23 @@ use trinetra::content;
 use axum::{
     Json, Router,
     extract::{Path, State},
-    http::StatusCode,
+    http::{HeaderValue, StatusCode, header},
+    middleware,
     response::{IntoResponse, Response},
     routing::get,
 };
 use tower_http::services::ServeDir;
 
 const LISTEN_PORT_DEFAULT: u16 = 8080;
+
+/// Without this, browsers heuristically cache ES modules and can mix stale and fresh files
+/// after an edit, which breaks module wiring. `no-cache` still allows cheap ETag revalidation.
+async fn revalidate_always(mut response: Response) -> Response {
+    response
+        .headers_mut()
+        .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-cache"));
+    response
+}
 
 #[derive(Clone)]
 struct AppState {
@@ -36,6 +46,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/api/beads", get(list_beads))
         .route("/api/beads/{index}", get(get_bead))
         .fallback_service(ServeDir::new(site_root.join("static")))
+        .layer(middleware::map_response(revalidate_always))
         .with_state(state);
 
     let address = SocketAddr::from(([127, 0, 0, 1], listen_port()?));
