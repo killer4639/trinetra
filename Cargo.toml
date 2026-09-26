@@ -8,6 +8,11 @@ edition = "2024"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+# Distinct from the lib name so Windows debug files (.pdb) do not collide.
+[[bin]]
+name = "trinetra-dev"
+path = "src/main.rs"
+
 [dependencies]
 pulldown-cmark = { version = "0.13.4", default-features = false, features = ["html"] }
 serde = { version = "1.0.229", features = ["derive"] }
